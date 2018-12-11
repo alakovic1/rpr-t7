@@ -17,6 +17,14 @@ public class Drzava implements Serializable {
         setGlavniGrad(new Grad());
     }
 
+    public Drzava(String naziv, int brojStanovnika, double povrsina, String jedinicaZaPovrsinu, Grad glavniGrad) {
+        setNaziv(naziv);
+        setBrojStanovnika(brojStanovnika);
+        setPovrsina(povrsina);
+        setJedinicaZaPovrsinu(jedinicaZaPovrsinu);
+        setGlavniGrad(glavniGrad);
+    }
+
     public String getNaziv() {
         return naziv;
     }
@@ -55,5 +63,12 @@ public class Drzava implements Serializable {
 
     public void setGlavniGrad(Grad glavniGrad) {
         this.glavniGrad = glavniGrad;
+    }
+
+    @Override
+    public String toString() {
+        String ispis = "";
+        ispis+= "Drzava{" + "naziv='" + getNaziv() + '\'' + ", brojStanovnika=" + getBrojStanovnika() + ", povrsina=" + getPovrsina() + ", jedinicaPovrsine='" + getPovrsina() + '\'' + ", glavniGrad=" + getGlavniGrad() + '}';
+        return ispis;
     }
 }

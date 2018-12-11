@@ -17,4 +17,11 @@ public class UN implements Serializable {
     public void setDrzave(ArrayList<Drzava> drzave) {
         this.drzave = drzave;
     }
+
+    @Override
+    public String toString() {
+        String ispis = "";
+        ispis+= "UN{" + "drzave=" + getDrzave() + '}';
+        return ispis;
+    }
 }
