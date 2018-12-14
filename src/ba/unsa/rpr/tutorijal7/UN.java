@@ -10,6 +10,10 @@ public class UN implements Serializable {
         setDrzave(new ArrayList<>());
     }
 
+    public UN(ArrayList<Drzava> drzave) {
+        setDrzave(drzave);
+    }
+
     public ArrayList<Drzava> getDrzave() {
         return drzave;
     }

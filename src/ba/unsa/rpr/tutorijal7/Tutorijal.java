@@ -14,36 +14,37 @@ import java.util.Scanner;
 
 public class Tutorijal {
 
-    public static ArrayList<Grad> ucitajGradove(){
-        ArrayList<Grad> gradovi = new ArrayList<>();
-        Scanner ulaz=null;
-        try{
-            ulaz=new Scanner(new FileReader("mjerenja.txt"));
-        } catch(FileNotFoundException e){
+    public static ArrayList<Grad> ucitajGradove() {
+        Scanner file = null;
+
+        try {
+            file = new Scanner(new FileReader("mjerenja.txt")).useDelimiter("[\\r\\n,]");
+        } catch (FileNotFoundException e) {
             System.out.println("Datoteka brojevi.txt ne postoji ili se ne može otvoriti.");
             System.out.println("Greska: " + e);
             System.exit(1);
         }
 
-        try{
-            while(ulaz.hasNext()){
-                String[] podaci = ulaz.nextLine().split(",");
-                Grad grad = new Grad();
-                grad.setNaziv(podaci[0]);
-                double[] niz=new double[podaci.length-1];
-                for(int i=1;i<1000;i++) {
-                    if (i == podaci.length) break;
-                    niz[i-1]=Double.parseDouble(podaci[i]);
+        ArrayList<Grad> gradovi = new ArrayList<>();
+        while (file.hasNext()) {
+            String imeGrada = file.next();
+            double[] temperature = new double[1000];
+            Grad grad = new Grad(imeGrada, 5000, temperature);
+            gradovi.add(grad);
+            int i = 0;
+            int vel = 0;
+            while (file.hasNextDouble()) {
+                double temp = file.nextDouble();
+                if (i < 1000) {
+                    temperature[i] = temp;
+                    vel++;
                 }
-                grad.setTemperature(niz);
-                gradovi.add(grad);
+                i++;
             }
-        } catch(Exception e){
-            System.out.println("Problem pri citanju!");
-            System.out.println("Greska: " + e);
-        } finally {
-            ulaz.close();
+            file.nextLine();
+            grad.setMjerenje(vel);
         }
+        file.close();
         return gradovi;
     }
 
@@ -62,20 +63,20 @@ public class Tutorijal {
         assert xmldoc != null;
         NodeList drzaveXml = xmldoc.getElementsByTagName("drzava");
 
-        for(int i = 0; i < drzaveXml.getLength(); i++) {
+        for (int i = 0; i < drzaveXml.getLength(); i++) {
             Node drzavaNode = drzaveXml.item(i);
 
-            if(drzavaNode instanceof Element) {
-                Element drzavaEl = (Element)drzavaNode;
+            if (drzavaNode instanceof Element) {
+                Element drzavaEl = (Element) drzavaNode;
 
                 int stanovnika = Integer.parseInt(drzavaEl.getAttribute("brojStanovnika"));
                 String naziv = drzavaEl.getElementsByTagName("naziv").item(0).getTextContent();
 
-                Element gGradXml = (Element)drzavaEl.getElementsByTagName("glavniGrad").item(0);
+                Element gGradXml = (Element) drzavaEl.getElementsByTagName("glavniGrad").item(0);
                 int gStanovnika = Integer.parseInt(gGradXml.getAttribute("brojStanovnika"));
                 String nazivGrada = gGradXml.getTextContent().trim();
 
-                Element povrsinaXml = (Element)drzavaEl.getElementsByTagName("povrsina").item(0);
+                Element povrsinaXml = (Element) drzavaEl.getElementsByTagName("povrsina").item(0);
                 String jedinica = povrsinaXml.getAttribute("jedinicaZaPovrsinu");
                 double povrsina = Double.parseDouble(drzavaEl.getElementsByTagName("povrsina").item(0).getTextContent());
 
@@ -89,18 +90,18 @@ public class Tutorijal {
     }
 
     public static void zapisiXml(UN un) {
-        try{
-            XMLEncoder izlaz = new XMLEncoder(new FileOutputStream("un.xml"));
+        try {
+            XMLEncoder izlaz = new XMLEncoder(new BufferedOutputStream(new FileOutputStream("un.xml")));
             izlaz.writeObject(un);
             izlaz.close();
-        } catch (FileNotFoundException greska){
+        } catch (FileNotFoundException greska) {
             System.out.println("Greska:" + greska);
         }
     }
 
     public static void main(String[] args) {
         ArrayList<Grad> gradovi = Tutorijal.ucitajGradove();
-        for(var pom : gradovi){
+        for (var pom : gradovi) {
             System.out.println(pom);
         }
         Drzava bih = new Drzava("Bosna i Hercegovina", 4000000, 52000, "km2", gradovi.get(0));

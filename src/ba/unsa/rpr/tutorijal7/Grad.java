@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 public class Grad implements Serializable {
     private String naziv;
     private int brojStanovnika;
-    private double[] temperature;
+    private double[] temperature = new double[1000];
     private int mjerenje;
 
     public Grad(){
